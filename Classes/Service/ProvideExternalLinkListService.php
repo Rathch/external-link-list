@@ -32,13 +32,13 @@ final readonly class ProvideExternalLinkListService
     public function getConfiguration(bool $useCache = true, bool $fetchDocs = true, ?OutputInterface $cliOutput = null): array
     {
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
 
         $externalLinks = $queryBuilder
-            ->select('uid', 'pid', 'header', 'header_link')
-            ->from('tt_content')
+            ->select('*')
+            ->from('pages')
             ->where(
-                $queryBuilder->expr()->like('header_link', $queryBuilder->createNamedParameter('http%', \PDO::PARAM_STR))
+                $queryBuilder->expr()->eq('doktype', '3'),
             )
             ->executeQuery()
             ->fetchAllAssociative();

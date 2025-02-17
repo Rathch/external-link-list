@@ -48,7 +48,7 @@ final class AdminModuleController
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
 
         $moduleTemplate->setTitle('External Link List');
-        $moduleTemplate->assign('configuration', $this->provideExternalLinkListService->getConfiguration());
+        $moduleTemplate->assign('links', $this->provideExternalLinkListService->getConfiguration());
         return $moduleTemplate->renderResponse('AdminModule/Index');
     }
 
