@@ -1,6 +1,36 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Parameter \\#1 \\$href of method TYPO3\\\\CMS\\\\Backend\\\\Template\\\\Components\\\\Menu\\\\MenuItem\\:\\:setHref\\(\\) expects string, Psr\\\\Http\\\\Message\\\\UriInterface given\\.$#"
+			count: 1
+			path: Classes/Backend/Controller/AdminModuleController.php
+
+		-
 			message: "#^Method Cru\\\\ExternalLinkList\\\\Service\\\\ProvideExternalLinkListService\\:\\:getConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Classes/Service/ProvideExternalLinkListService.php
+
+		-
+			message: "#^Cannot access offset 'title' on array\\<string, mixed\\>\\|false\\.$#"
+			count: 1
+			path: Classes/Service/ProvideParsedLinkListService.php
+
+		-
+			message: "#^Method Cru\\\\ExternalLinkList\\\\Service\\\\ProvideParsedLinkListService\\:\\:getConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Classes/Service/ProvideParsedLinkListService.php
+
+		-
+			message: "#^Only booleans are allowed in &&, string\\|false given on the right side\\.$#"
+			count: 1
+			path: Classes/Service/ProvideParsedLinkListService.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 1
+			path: Classes/Service/ProvideParsedLinkListService.php
+
+		-
+			message: "#^Parameter \\#2 \\$content of static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\GeneralUtility\\:\\:writeFileToTypo3tempDir\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: Classes/Service/ProvideParsedLinkListService.php

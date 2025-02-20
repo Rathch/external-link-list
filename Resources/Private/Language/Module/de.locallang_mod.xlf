@@ -15,6 +15,48 @@
 				<source>External Link List</source>
                 <target>Liste aller externen Links</target>
 			</trans-unit>
+
+			<trans-unit id="slug" xml:space="preserve">
+				<source>Slug</source>
+				<target>Url Segment</target>
+			</trans-unit>
+			<trans-unit id="visibility" xml:space="preserve">
+				<source>Visibility</source>
+				<target>Sichtbarkeit</target>
+			</trans-unit>
+			<trans-unit id="yes" xml:space="preserve">
+				<source>Yes</source>
+				<target>Ja</target>
+			</trans-unit>
+			<trans-unit id="no" xml:space="preserve">
+				<source>No</source>
+				<target>Nein</target>
+			</trans-unit>
+
+			<trans-unit id="deleted" xml:space="preserve">
+				<source>Deleted</source>
+				<target>Gelöscht</target>
+			</trans-unit>
+			<trans-unit id="url" xml:space="preserve">
+				<source>URL</source>
+				<target>URL</target>
+			</trans-unit>
+			<trans-unit id="target" xml:space="preserve">
+				<source>Target</source>
+				<target>Ziel</target>
+			</trans-unit>
+			<trans-unit id="actions" xml:space="preserve">
+				<source>Actions</source>
+				<target>Aktionen</target>
+			</trans-unit>
+			<trans-unit id="visible" xml:space="preserve">
+				<source>Visible</source>
+				<target>Sichtbar</target>
+			</trans-unit>
+			<trans-unit id="hidden" xml:space="preserve">
+				<source>Hidden</source>
+				<target>Versteckt</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

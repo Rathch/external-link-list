@@ -12,7 +12,44 @@
 			<trans-unit id="mlang_tabs_tab" resname="mlang_tabs_tab">
 				<source>External Link List</source>
 			</trans-unit>
-	
+
+			<trans-unit id="slug" xml:space="preserve">
+				<source>Slug</source>
+			</trans-unit>
+			<trans-unit id="visibility" xml:space="preserve">
+				<source>Visibility</source>
+			</trans-unit>
+			<trans-unit id="yes" xml:space="preserve">
+				<source>Yes</source>
+			</trans-unit>
+			<trans-unit id="no" xml:space="preserve">
+				<source>No</source>
+			</trans-unit>
+
+			<trans-unit id="uid" xml:space="preserve">
+				<source>UID</source>
+			</trans-unit>
+			<trans-unit id="pid" xml:space="preserve">
+				<source>PID</source>
+			</trans-unit>
+			<trans-unit id="deleted" xml:space="preserve">
+				<source>Deleted</source>
+			</trans-unit>
+			<trans-unit id="url" xml:space="preserve">
+				<source>URL</source>
+			</trans-unit>
+			<trans-unit id="target" xml:space="preserve">
+				<source>Target</source>
+			</trans-unit>
+			<trans-unit id="actions" xml:space="preserve">
+				<source>Actions</source>
+			</trans-unit>
+			<trans-unit id="visible" xml:space="preserve">
+				<source>Visible</source>
+			</trans-unit>
+			<trans-unit id="hidden" xml:space="preserve">
+				<source>Hidden</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

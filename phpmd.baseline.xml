@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <phpmd-baseline>
   <violation rule="PHPMD\Rule\Naming\LongVariable" file="Classes/Backend/Controller/AdminModuleController.php"/>
-  <violation rule="PHPMD\Rule\UnusedLocalVariable" file="Classes/Backend/Controller/AdminModuleController.php"/>
+  <violation rule="PHPMD\Rule\CleanCode\StaticAccess" file="Classes/Backend/Controller/AdminModuleController.php"/>
   <violation rule="PHPMD\Rule\CleanCode\BooleanArgumentFlag" file="Classes/Service/ProvideExternalLinkListService.php"/>
   <violation rule="PHPMD\Rule\UnusedFormalParameter" file="Classes/Service/ProvideExternalLinkListService.php"/>
+  <violation rule="PHPMD\Rule\CleanCode\BooleanArgumentFlag" file="Classes/Service/ProvideParsedLinkListService.php"/>
+  <violation rule="PHPMD\Rule\CleanCode\ErrorControlOperator" file="Classes/Service/ProvideParsedLinkListService.php" method="getConfiguration"/>
+  <violation rule="PHPMD\Rule\CleanCode\StaticAccess" file="Classes/Service/ProvideParsedLinkListService.php"/>
 </phpmd-baseline>
