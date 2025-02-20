@@ -1,5 +1,6 @@
 # External Link List for TYPO3
-
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![TYPO3](https://typo3-badges.dev/badge/typo3/shields.svg)
 **`cru/external-link-list`** is a TYPO3 extension that adds a module to display all external links in a TYPO3 installation in a clear and organized way. The links are automatically cached to improve performance.
 
 ## 🔍 Features
