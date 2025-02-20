@@ -21,16 +21,15 @@ declare(strict_types=1);
 
 namespace Cru\ExternalLinkList\Backend\Controller;
 
+use Cru\ExternalLinkList\Service\ProvideExternalLinkListService;
+use Cru\ExternalLinkList\Service\ProvideParsedLinkListService;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use Cru\ExternalLinkList\Service\ProvideParsedLinkListService;
-use Cru\ExternalLinkList\Service\ProvideExternalLinkListService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 #[AsController]
 final class AdminModuleController
@@ -70,7 +69,7 @@ final class AdminModuleController
         $this->setUpMenu($request, $moduleTemplate);
 
         $moduleTemplate->setTitle('External Link List');
-        
+
         $moduleTemplate->assign('links', $this->provideParsedLinkListService->getConfiguration());
         return $moduleTemplate->renderResponse('AdminModule/List');
     }

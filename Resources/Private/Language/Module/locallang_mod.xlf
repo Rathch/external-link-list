@@ -12,7 +12,9 @@
 			<trans-unit id="mlang_tabs_tab" resname="mlang_tabs_tab">
 				<source>External Link List</source>
 			</trans-unit>
-
+			<trans-unit id="page" xml:space="preserve">
+				<source>Page</source>
+			</trans-unit>
 			<trans-unit id="slug" xml:space="preserve">
 				<source>Slug</source>
 			</trans-unit>

@@ -15,7 +15,10 @@
 				<source>External Link List</source>
                 <target>Liste aller externen Links</target>
 			</trans-unit>
-
+			<trans-unit id="page" xml:space="preserve">
+				<source>Page</source>
+				<target>Seite</target>
+			</trans-unit>
 			<trans-unit id="slug" xml:space="preserve">
 				<source>Slug</source>
 				<target>Url Segment</target>
