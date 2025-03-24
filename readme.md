@@ -9,6 +9,7 @@
 - **External Link Lists**  
   - **Page Type View**: Displays all pages of the type *External Link*.  
   - **RTE View**: Lists all external links from the Rich Text Editor (RTE).
+  - **RTE Groupe View**: Lists all external links from the Rich Text Editor (RTE) Grouped by href.
 
 ## 💾 Installation
 
