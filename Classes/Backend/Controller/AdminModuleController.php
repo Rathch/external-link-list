@@ -125,8 +125,6 @@ final class AdminModuleController
                             ->setActive($isActive);
             $menu->addMenuItem($menuItem);
         }
-
         $moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->addMenu($menu);
     }
-
 }
