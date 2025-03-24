@@ -41,15 +41,8 @@ final readonly class ProvideParsedLinkListService
             return json_decode(file_get_contents($cacheFile), true);
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $records = $queryBuilder
-            ->select('uid', 'bodytext', 'pid')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->like('bodytext', $queryBuilder->createNamedParameter('%<a%', \PDO::PARAM_STR))
-            )
-            ->executeQuery()
-            ->fetchAllAssociative();
+        $records = $this->fetchRecordsWithLinks();
+        
         foreach ($records as $record) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
             $page = $queryBuilder
@@ -68,10 +61,12 @@ final readonly class ProvideParsedLinkListService
             foreach ($anchors as $anchor) {
                 $href = trim($anchor->getAttribute('href'));
                 if (!str_starts_with($href, 't3://') && filter_var($href, FILTER_VALIDATE_URL)) {
-                    $externalLinks[$record['uid']][$index]['href'] = $href;
-                    $externalLinks[$record['uid']][$index]['uid'] = $record['uid'];
-                    $externalLinks[$record['uid']][$index]['pid'] = $record['pid'];
-                    $externalLinks[$record['uid']][$index]['title'] = $page['title'];
+                    $externalLinks[$record['uid']][$index] = [
+                        'href' => $href,
+                        'uid' => $record['uid'],
+                        'pid' => $record['pid'],
+                        'title' => $page['title'],
+                    ];
                     $index++;
                 }
             }
@@ -94,15 +89,7 @@ final readonly class ProvideParsedLinkListService
         ) {
             return json_decode(file_get_contents($cacheFile), true);
         }
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $records = $queryBuilder
-            ->select('uid', 'bodytext', 'pid')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->like('bodytext', $queryBuilder->createNamedParameter('%<a%', \PDO::PARAM_STR))
-            )
-            ->executeQuery()
-            ->fetchAllAssociative();
+        $records = $this->fetchRecordsWithLinks();
 
         foreach ($records as $record) {
             $dom = new DOMDocument();
@@ -126,5 +113,20 @@ final readonly class ProvideParsedLinkListService
         GeneralUtility::writeFileToTypo3tempDir($cacheFile, json_encode($externalLinks));
 
         return $externalLinks;
+    }
+
+    private function fetchRecordsWithLinks()
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $records = $queryBuilder
+            ->select('uid', 'bodytext', 'pid')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->like('bodytext', $queryBuilder->createNamedParameter('%<a%', \PDO::PARAM_STR))
+            )
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+            return $records;
     }
 }

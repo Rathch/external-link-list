@@ -118,7 +118,7 @@ final class AdminModuleController
             $currentUri = $request->getUri();
             $action = $menuItemConfig['route'];
             $uri = $uriBuilder->buildUriFromRoute($action, [$request]);
-            $isActive = ($currentUri === $uri);
+            $isActive = ($currentUri->getPath() === $uri->getPath());
             $menuItem = $menu->makeMenuItem()
                             ->setTitle($menuItemConfig['label'])
                             ->setHref($uri)
