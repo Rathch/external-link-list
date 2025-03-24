@@ -60,6 +60,10 @@
 				<source>Hidden</source>
 				<target>Versteckt</target>
 			</trans-unit>
+			<trans-unit id="title" xml:space="preserve">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

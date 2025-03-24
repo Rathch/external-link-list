@@ -52,6 +52,9 @@
 			<trans-unit id="hidden" xml:space="preserve">
 				<source>Hidden</source>
 			</trans-unit>
+			<trans-unit id="title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

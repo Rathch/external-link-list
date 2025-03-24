@@ -18,10 +18,15 @@
   */
 
 return [
+    'tx_link_list_groupe' => [
+        'path' => '/link/list/groupe',
+        'target' => 'Cru\\ExternalLinkList\\Backend\\Controller\\AdminModuleController::groupeAction',
+        'action' => 'groupe',
+    ],
     'tx_link_list_list' => [
         'path' => '/link/list/list',
         'target' => 'Cru\\ExternalLinkList\\Backend\\Controller\\AdminModuleController::listAction',
-        'action' => 'listCoreEventsAction',
+        'action' => 'list',
     ],
     'tx_link_list_index' => [
         'path' => '/link/list/index',

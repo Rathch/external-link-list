@@ -69,9 +69,21 @@ final class AdminModuleController
         $this->setUpMenu($request, $moduleTemplate);
 
         $moduleTemplate->setTitle('External Link List');
-
         $moduleTemplate->assign('links', $this->provideParsedLinkListService->getConfiguration());
         return $moduleTemplate->renderResponse('AdminModule/List');
+    }
+
+    public function groupeAction(
+        ServerRequestInterface $request,
+    ): ResponseInterface {
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
+
+        $this->setUpMenu($request, $moduleTemplate);
+
+        $moduleTemplate->setTitle('External Link List');
+
+        $moduleTemplate->assign('links', $this->provideParsedLinkListService->getGroupeConfiguration());
+        return $moduleTemplate->renderResponse('AdminModule/Groupe');
     }
 
     private function setUpMenu(ServerRequestInterface $request, ModuleTemplate $moduleTemplate): void
@@ -88,9 +100,15 @@ final class AdminModuleController
             ],
             'list' => [
                 'controller' => 'Module',
-                'action' => 'listCoreEventsAction',
+                'action' => 'list',
                 'route' => 'tx_link_list_list',
                 'label' => 'List parsed links (RTE)',
+            ],
+            'groupe' => [
+                'controller' => 'Module',
+                'action' => 'groupe',
+                'route' => 'tx_link_list_groupe',
+                'label' => 'List parsed links Grouped by href(RTE)',
             ],
         ];
 

@@ -28,19 +28,19 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 
 final readonly class ProvideParsedLinkListService
 {
-    public function __construct() {}
-
     public function getConfiguration(bool $useCache = true): array
     {
         $cacheFile = Environment::getVarPath() . '/cache/data/links.json';
         $externalLinks = [];
 
-        if ($useCache === true
+        if (
+            $useCache === true
             && file_exists($cacheFile)
             && filemtime($cacheFile) > time() - 600
         ) {
             return json_decode(file_get_contents($cacheFile), true);
         }
+
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $records = $queryBuilder
             ->select('uid', 'bodytext', 'pid')
@@ -73,6 +73,52 @@ final readonly class ProvideParsedLinkListService
                     $externalLinks[$record['uid']][$index]['pid'] = $record['pid'];
                     $externalLinks[$record['uid']][$index]['title'] = $page['title'];
                     $index++;
+                }
+            }
+        }
+
+        GeneralUtility::writeFileToTypo3tempDir($cacheFile, json_encode($externalLinks));
+
+        return $externalLinks;
+    }
+
+    public function getGroupeConfiguration(bool $useCache = true): array
+    {
+        $cacheFile = Environment::getVarPath() . '/cache/data/links_grouped.json';
+        $externalLinks = [];
+
+        if (
+            $useCache === true
+            && file_exists($cacheFile)
+            && filemtime($cacheFile) > time() - 600
+        ) {
+            return json_decode(file_get_contents($cacheFile), true);
+        }
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $records = $queryBuilder
+            ->select('uid', 'bodytext', 'pid')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->like('bodytext', $queryBuilder->createNamedParameter('%<a%', \PDO::PARAM_STR))
+            )
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        foreach ($records as $record) {
+            $dom = new DOMDocument();
+            @$dom->loadHTML($record['bodytext'], LIBXML_NOERROR);
+            $anchors = $dom->getElementsByTagName('a');
+            $index = 0;
+            foreach ($anchors as $anchor) {
+                $href = trim($anchor->getAttribute('href'));
+                if (!str_starts_with($href, 't3://') && filter_var($href, FILTER_VALIDATE_URL)) {
+                    $externalLinks[$href][] = [
+                        'href' => $href,
+                        'uid' => $record['uid'],
+                        'pid' => $record['pid'],
+                        'title' => trim($anchor->getAttribute('title')),
+                        'target' => trim($anchor->getAttribute('target')),
+                    ];
                 }
             }
         }
