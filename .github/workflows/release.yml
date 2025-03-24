@@ -9,28 +9,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Repository auschecken
+      - name: "📥 Repository auschecken"
         uses: actions/checkout@v4
 
-      - name: 🔧 PHP & Composer einrichten
+      - name: "🔧 PHP & Composer einrichten"
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'  # Falls nötig, anpassen
+          php-version: '8.1'
           tools: composer, typo3-tailor
 
-      - name: 📦 Abhängigkeiten installieren
+      - name: "📦 Abhängigkeiten installieren"
         run: composer install --no-dev --prefer-dist --optimize-autoloader
 
-      - name: 🔨 TYPO3 Tailor: Release generieren
+      - name: "🔨 TYPO3 Tailor: Release generieren"
         run: typo3-tailor release
 
-      - name: 🗜 ZIP-Datei erstellen
+      - name: "🗜 ZIP-Datei erstellen"
         run: |
           EXTENSION_KEY=$(basename "$GITHUB_REPOSITORY")
           cd ..
           zip -r "${EXTENSION_KEY}.zip" "${GITHUB_WORKSPACE}" -x "*/.git*" "*/.github/*"
 
-      - name: ⬆ ZIP als Release-Asset hochladen
+      - name: "⬆ ZIP als Release-Asset hochladen"
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
           asset_name: ${{ github.event.repository.name }}.zip
           asset_content_type: application/zip
 
-      - name: 🚀 Veröffentlichung auf TER (optional)
+      - name: "🚀 Veröffentlichung auf TER (optional)""
         run: |
           #typo3-tailor upload
         env:
