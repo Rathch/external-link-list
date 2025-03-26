@@ -1,47 +1,30 @@
-name: TYPO3 TER Release
+name: Publish TYPO3 Extension
 
 on:
   release:
     types: [published]
 
 jobs:
-  build-and-release:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "📥 Repository auschecken"
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: "🔧 PHP & Composer einrichten"
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          tools: composer, typo3-tailor
+      - name: Install dependencies
+        run: sudo apt-get install -y zip
 
-      - name: "📦 Abhängigkeiten installieren"
-        run: composer install --no-dev --prefer-dist --optimize-autoloader
+      - name: Determine extension key
+        run: echo "EXT_KEY=$(grep "'extensionKey'" ext_emconf.php | cut -d "'" -f 4)" >> $GITHUB_ENV
 
-      - name: "🔨 TYPO3 Tailor: Release generieren"
-        run: typo3-tailor release
-
-      - name: "🗜 ZIP-Datei erstellen"
+      - name: Create ZIP package
         run: |
-          EXTENSION_KEY=$(basename "$GITHUB_REPOSITORY")
-          cd ..
-          zip -r "${EXTENSION_KEY}.zip" "${GITHUB_WORKSPACE}" -x "*/.git*" "*/.github/*"
+          mkdir -p build
+          zip -r build/${{ env.EXT_KEY }}.zip . -x "*.git*" "build/*" "tests/*"
 
-      - name: "⬆ ZIP als Release-Asset hochladen"
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ../${{ github.event.repository.name }}.zip
-          asset_name: ${{ github.event.repository.name }}.zip
-          asset_content_type: application/zip
-
-      - name: "🚀 Veröffentlichung auf TER (optional)""
+      - name: Upload to TYPO3 TER
         run: |
-          #typo3-tailor upload
-        env:
-          TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}  # Erstelle ein API-Token in deinem TYPO3-Konto
+          curl -X POST https://extensions.typo3.org/api/v1/upload \
+            -H "Authorization: Bearer ${{ secrets.TER_API_KEY }}" \
+            -F "extension=@build/${{ env.EXT_KEY }}.zip"
