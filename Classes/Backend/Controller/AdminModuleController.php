@@ -35,9 +35,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 final class AdminModuleController
 {
     public function __construct(
-        private readonly ModuleTemplateFactory $moduleTemplateFactory,
-        private readonly ProvideExternalLinkListService $provideExternalLinkListService,
-        private readonly ProvideParsedLinkListService $provideParsedLinkListService,
+        private ModuleTemplateFactory $moduleTemplateFactory,
+        private ProvideExternalLinkListService $provideExternalLinkListService,
+        private ProvideParsedLinkListService $provideParsedLinkListService,
     ) {}
 
     public function handleRequest(ServerRequestInterface $request): ResponseInterface

@@ -25,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final readonly class ProvideExternalLinkListService
+final class ProvideExternalLinkListService
 {
     public function __construct() {}
 
