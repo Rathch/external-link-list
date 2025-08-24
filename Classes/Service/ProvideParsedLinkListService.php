@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
-final readonly class ProvideParsedLinkListService
+final class ProvideParsedLinkListService
 {
     public function getConfiguration(bool $useCache = true): array
     {
