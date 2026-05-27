@@ -68,11 +68,11 @@
         "phpcs:fix": "php .composer/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php -v --using-cache no --diff",
         "phpmd:analyze": "php .composer/bin/phpmd Classes/ text ruleset.xml --baseline-file phpmd.baseline.xml",
         "phpmd:generatebaseline": "php .composer/bin/phpmd Classes/ text ruleset.xml --baseline-file phpmd.baseline.xml --generate-baseline",
-        "phpunit:unit": "@composer dump-autoload --dev && php .composer/bin/phpunit -c Build/UnitTests.xml",
         "phpstan:analyze": "php .composer/bin/phpstan analyse --no-progress",
         "phpstan:generatebaseline": "php .composer/bin/phpstan analyse --no-progress --generate-baseline",
-        "phpunit:functional": "@composer dump-autoload --dev && php .composer/bin/phpunit -c Tests/FunctionalTests.xml",
         "phpunit": "@composer phpunit:unit && @composer phpunit:functional",
+        "phpunit:functional": "@composer dump-autoload --dev && php .composer/bin/phpunit -c Tests/FunctionalTests.xml",
+        "phpunit:unit": "@composer dump-autoload --dev && php .composer/bin/phpunit -c Build/UnitTests.xml",
         "typoscript:lint": "php .composer/bin/typoscript-lint -c .typoscript-lint.yml --ansi -n --fail-on-warnings -vvv Configuration/TypoScript",
         "yaml:lint": "rm -rf Build/node_modules && find . -not -path './.composer/*' -not -path './Build/*' -name '*.yaml' -o -name '*.yml' | xargs -r php .composer/bin/yaml-lint --parse-tags"
     },
@@ -86,11 +86,11 @@
         "phpcs:fix": "Fix code with PHP Code Sniffer (TYPO3 Ruleset)",
         "phpmd:analyze": "Analyze code with PHPMD",
         "phpmd:generatebaseline": "Generate baseline for PHPMD",
-        "phpunit:unit": "Run unit tests",
         "phpstan:analyze": "Analyze code with PHPStan",
         "phpstan:generatebaseline": "Generate baseline for PHPStan",
-        "phpunit:functional": "Run functional tests",
         "phpunit": "Run unit and functional tests",
+        "phpunit:functional": "Run functional tests",
+        "phpunit:unit": "Run unit tests",
         "typoscript:lint": "Lint TypoScript files",
         "yaml:lint": "Lint YAML files"
     }
