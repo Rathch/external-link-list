@@ -1,4 +1,5 @@
 .composer
+.phpunit.cache
 composer.lock
 public
 vendor

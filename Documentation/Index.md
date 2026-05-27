@@ -4,6 +4,8 @@
 
 **`cru/external-link-list`** is a TYPO3 extension that adds a module to display all external links in a TYPO3 installation in a clear and organized way. The links are automatically cached to improve performance.
 
+Compatible with TYPO3 **12.4 LTS**, **13.4 LTS**, and **14.3 LTS**.
+
 ## 🔍 Features
 
 - **External Link Lists**  
