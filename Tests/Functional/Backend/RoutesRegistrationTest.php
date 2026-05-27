@@ -24,9 +24,9 @@ final class RoutesRegistrationTest extends FunctionalTestCase
     {
         $router = GeneralUtility::makeInstance(Router::class);
 
-        self::assertTrue($router->hasRoute('tx_link_list_index'));
-        self::assertTrue($router->hasRoute('tx_link_list_list'));
-        self::assertTrue($router->hasRoute('tx_link_list_groupe'));
+        self::assertTrue($router->hasRoute('external_link_list_index'));
+        self::assertTrue($router->hasRoute('external_link_list_list'));
+        self::assertTrue($router->hasRoute('external_link_list_groupe'));
     }
 
     #[Test]

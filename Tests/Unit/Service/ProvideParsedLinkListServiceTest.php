@@ -6,6 +6,7 @@ namespace Cru\ExternalLinkList\Tests\Unit\Service;
 
 use Cru\ExternalLinkList\Service\ProvideParsedLinkListService;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 final class ProvideParsedLinkListServiceTest extends UnitTestCase
@@ -25,7 +26,7 @@ final class ProvideParsedLinkListServiceTest extends UnitTestCase
         touch($cacheFile, time());
         $this->testFilesToDelete[] = $cacheFile;
 
-        $subject = new ProvideParsedLinkListService();
+        $subject = new ProvideParsedLinkListService($this->createMock(ConnectionPool::class));
 
         $result = $subject->getConfiguration(true);
 
@@ -51,7 +52,7 @@ final class ProvideParsedLinkListServiceTest extends UnitTestCase
         touch($cacheFile, time());
         $this->testFilesToDelete[] = $cacheFile;
 
-        $subject = new ProvideParsedLinkListService();
+        $subject = new ProvideParsedLinkListService($this->createMock(ConnectionPool::class));
 
         $result = $subject->getGroupeConfiguration(true);
 

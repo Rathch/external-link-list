@@ -26,7 +26,7 @@ final class ProvideParsedLinkListServiceTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/tt_content.csv');
         $this->clearLinkCaches();
 
-        $this->subject = new ProvideParsedLinkListService();
+        $this->subject = $this->get(ProvideParsedLinkListService::class);
     }
 
     #[Test]

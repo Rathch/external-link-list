@@ -11,18 +11,11 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 final class ProvideExternalLinkListServiceTest extends UnitTestCase
 {
     private ProvideExternalLinkListService $subject;
-
-    protected function tearDown(): void
-    {
-        GeneralUtility::purgeInstances();
-        parent::tearDown();
-    }
 
     /**
      * @test
@@ -56,6 +49,12 @@ final class ProvideExternalLinkListServiceTest extends UnitTestCase
      */
     public function getConfigurationIncludesPageWithUrlTypolinkInLinkField(): void
     {
+        $linkService = $this->createMock(LinkService::class);
+        $linkService->method('resolve')->willReturn([
+            'type' => LinkService::TYPE_URL,
+            'url' => 'https://other.example/',
+        ]);
+
         $this->mockPagesQuery([
             [
                 'uid' => 3,
@@ -64,14 +63,7 @@ final class ProvideExternalLinkListServiceTest extends UnitTestCase
                 'link' => 'https://other.example/',
                 'doktype' => 3,
             ],
-        ]);
-
-        $linkService = $this->createMock(LinkService::class);
-        $linkService->method('resolve')->willReturn([
-            'type' => LinkService::TYPE_URL,
-            'url' => 'https://other.example/',
-        ]);
-        GeneralUtility::setSingletonInstance(LinkService::class, $linkService);
+        ], $linkService);
 
         $result = $this->subject->getConfiguration();
 
@@ -84,6 +76,12 @@ final class ProvideExternalLinkListServiceTest extends UnitTestCase
      */
     public function getConfigurationExcludesInternalTypolinkPage(): void
     {
+        $linkService = $this->createMock(LinkService::class);
+        $linkService->method('resolve')->willReturn([
+            'type' => 'page',
+            'pageuid' => 5,
+        ]);
+
         $this->mockPagesQuery([
             [
                 'uid' => 4,
@@ -92,14 +90,7 @@ final class ProvideExternalLinkListServiceTest extends UnitTestCase
                 'link' => 't3://page?uid=5',
                 'doktype' => 3,
             ],
-        ]);
-
-        $linkService = $this->createMock(LinkService::class);
-        $linkService->method('resolve')->willReturn([
-            'type' => 'page',
-            'pageuid' => 5,
-        ]);
-        GeneralUtility::setSingletonInstance(LinkService::class, $linkService);
+        ], $linkService);
 
         $result = $this->subject->getConfiguration();
 
@@ -138,6 +129,9 @@ final class ProvideExternalLinkListServiceTest extends UnitTestCase
      */
     public function getConfigurationFallsBackToValidUrlWhenLinkServiceThrows(): void
     {
+        $linkService = $this->createMock(LinkService::class);
+        $linkService->method('resolve')->willThrowException(new RuntimeException('resolve failed'));
+
         $this->mockPagesQuery([
             [
                 'uid' => 5,
@@ -146,11 +140,7 @@ final class ProvideExternalLinkListServiceTest extends UnitTestCase
                 'link' => 'https://fallback.example/',
                 'doktype' => 3,
             ],
-        ]);
-
-        $linkService = $this->createMock(LinkService::class);
-        $linkService->method('resolve')->willThrowException(new RuntimeException('resolve failed'));
-        GeneralUtility::setSingletonInstance(LinkService::class, $linkService);
+        ], $linkService);
 
         $result = $this->subject->getConfiguration();
 
@@ -161,7 +151,7 @@ final class ProvideExternalLinkListServiceTest extends UnitTestCase
     /**
      * @param list<array<string, mixed>> $pages
      */
-    private function mockPagesQuery(array $pages): void
+    private function mockPagesQuery(array $pages, ?LinkService $linkService = null): void
     {
         $result = $this->createMock(Result::class);
         $result->method('fetchAllAssociative')->willReturn($pages);
@@ -179,6 +169,9 @@ final class ProvideExternalLinkListServiceTest extends UnitTestCase
         $connectionPool = $this->createMock(ConnectionPool::class);
         $connectionPool->method('getQueryBuilderForTable')->with('pages')->willReturn($queryBuilder);
 
-        $this->subject = new ProvideExternalLinkListService($connectionPool);
+        $this->subject = new ProvideExternalLinkListService(
+            $connectionPool,
+            $linkService ?? $this->createMock(LinkService::class),
+        );
     }
 }

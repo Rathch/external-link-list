@@ -6,8 +6,6 @@ namespace Cru\ExternalLinkList\Tests\Functional\Service;
 
 use Cru\ExternalLinkList\Service\ProvideExternalLinkListService;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 final class ProvideExternalLinkListServiceTest extends FunctionalTestCase
@@ -24,9 +22,7 @@ final class ProvideExternalLinkListServiceTest extends FunctionalTestCase
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
 
-        $this->subject = new ProvideExternalLinkListService(
-            GeneralUtility::makeInstance(ConnectionPool::class),
-        );
+        $this->subject = $this->get(ProvideExternalLinkListService::class);
     }
 
     #[Test]
