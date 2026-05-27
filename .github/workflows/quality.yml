@@ -48,6 +48,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          # PR-Events: Branch-HEAD statt Merge-Commit mit Base (vermeidet veraltete composer.json)
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -90,10 +93,17 @@ jobs:
             --no-progress \
             --prefer-dist
 
+      - name: Ensure composer update did not change composer.json
+        run: |
+          if ! git diff --exit-code composer.json; then
+            echo "::error::composer update modified composer.json (commit composer.lock or run composer normalize:fix locally after update)"
+            git diff composer.json
+            exit 1
+          fi
+
       - name: Composer validation
         run: |
           composer run-script composer:validate
-          composer run-script composer:normalize
           composer run-script composer:psr-verify
 
       - name: Lint JSON and YAML
