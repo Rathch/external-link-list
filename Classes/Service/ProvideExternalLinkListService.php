@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Cru\ExternalLinkList\Service;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Throwable;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
 
@@ -103,7 +102,7 @@ final class ProvideExternalLinkListService
             $linkDetails = $this->linkService->resolve($link);
 
             return ($linkDetails['type'] ?? '') === LinkService::TYPE_URL;
-        } catch (Throwable) {
+        } catch (\Throwable) {
             return !$this->isTypo3ResourceUri($link) && filter_var($link, FILTER_VALIDATE_URL) !== false;
         }
     }
@@ -123,7 +122,7 @@ final class ProvideExternalLinkListService
             }
 
             return $this->linkService->asString($linkDetails);
-        } catch (Throwable) {
+        } catch (\Throwable) {
             return $link;
         }
     }

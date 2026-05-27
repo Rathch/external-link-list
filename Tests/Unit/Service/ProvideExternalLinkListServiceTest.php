@@ -6,7 +6,6 @@ namespace Cru\ExternalLinkList\Tests\Unit\Service;
 
 use Cru\ExternalLinkList\Service\ProvideExternalLinkListService;
 use Doctrine\DBAL\Result;
-use RuntimeException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -130,7 +129,7 @@ final class ProvideExternalLinkListServiceTest extends UnitTestCase
     public function getConfigurationFallsBackToValidUrlWhenLinkServiceThrows(): void
     {
         $linkService = $this->createMock(LinkService::class);
-        $linkService->method('resolve')->willThrowException(new RuntimeException('resolve failed'));
+        $linkService->method('resolve')->willThrowException(new \RuntimeException('resolve failed'));
 
         $this->mockPagesQuery([
             [
