@@ -25,11 +25,19 @@ return [
         'access' => 'user',
         'path' => '/module/web/external_link_list',
         'labels' => 'LLL:EXT:external_link_list/Resources/Private/Language/Module/locallang_mod.xlf',
-        'extensionName' => 'ExternalLinkList',
         'iconIdentifier' => 'tx_external_link_list-backend-module',
         'routes' => [
             '_default' => [
                 'target' => AdminModuleController::class . '::handleRequest',
+            ],
+            'index' => [
+                'target' => AdminModuleController::class . '::indexAction',
+            ],
+            'list' => [
+                'target' => AdminModuleController::class . '::listAction',
+            ],
+            'groupe' => [
+                'target' => AdminModuleController::class . '::groupeAction',
             ],
         ],
     ],
