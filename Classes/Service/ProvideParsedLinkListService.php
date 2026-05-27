@@ -157,7 +157,8 @@ final class ProvideParsedLinkListService
         $dom = new \DOMDocument();
         $useInternalErrors = libxml_use_internal_errors(true);
         try {
-            $dom->loadHTML($html, LIBXML_NOERROR);
+            // RTE usually stores HTML fragments. Ensure consistent parsing in different libxml versions.
+            $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_NOERROR | LIBXML_NOWARNING);
         } finally {
             libxml_clear_errors();
             libxml_use_internal_errors($useInternalErrors);
