@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Cru\ExternalLinkList\Service;
 
+use DOMDocument;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -152,9 +153,9 @@ final class ProvideParsedLinkListService
         return $normalized;
     }
 
-    private function loadHtmlDocument(string $html): \DOMDocument
+    private function loadHtmlDocument(string $html): DOMDocument
     {
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $useInternalErrors = libxml_use_internal_errors(true);
         try {
             $dom->loadHTML($html, LIBXML_NOERROR);
