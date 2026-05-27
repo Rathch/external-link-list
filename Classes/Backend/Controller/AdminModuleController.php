@@ -29,15 +29,15 @@ use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 #[AsController]
 final class AdminModuleController
 {
     public function __construct(
-        private ModuleTemplateFactory $moduleTemplateFactory,
-        private ProvideExternalLinkListService $provideExternalLinkListService,
-        private ProvideParsedLinkListService $provideParsedLinkListService,
+        private readonly ModuleTemplateFactory $moduleTemplateFactory,
+        private readonly ProvideExternalLinkListService $provideExternalLinkListService,
+        private readonly ProvideParsedLinkListService $provideParsedLinkListService,
+        private readonly UriBuilder $uriBuilder,
     ) {}
 
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
@@ -93,36 +93,27 @@ final class AdminModuleController
 
         $menuItems = [
             'index' => [
-                'controller' => 'Module',
-                'action' => 'index',
-                'route' => 'tx_link_list_index',
+                'route' => 'external_link_list_index',
                 'label' => 'List External Link (Pages)',
             ],
             'list' => [
-                'controller' => 'Module',
-                'action' => 'list',
-                'route' => 'tx_link_list_list',
+                'route' => 'external_link_list_list',
                 'label' => 'List parsed links (RTE)',
             ],
             'groupe' => [
-                'controller' => 'Module',
-                'action' => 'groupe',
-                'route' => 'tx_link_list_groupe',
+                'route' => 'external_link_list_groupe',
                 'label' => 'List parsed links Grouped by href(RTE)',
             ],
         ];
 
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-
         foreach ($menuItems as $menuItemConfig) {
-            $currentUri = $request->getUri();
-            $action = $menuItemConfig['route'];
-            $uri = $uriBuilder->buildUriFromRoute($action, [$request]);
-            $isActive = ($currentUri->getPath() === $uri->getPath());
+            $menuUri = $this->uriBuilder->buildUriFromRoute($menuItemConfig['route']);
+            $href = (string)$menuUri;
+            $isActive = $request->getUri()->getPath() === $menuUri->getPath();
             $menuItem = $menu->makeMenuItem()
-                            ->setTitle($menuItemConfig['label'])
-                            ->setHref($uri)
-                            ->setActive($isActive);
+                ->setTitle($menuItemConfig['label'])
+                ->setHref($href)
+                ->setActive($isActive);
             $menu->addMenuItem($menuItem);
         }
         $moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->addMenu($menu);

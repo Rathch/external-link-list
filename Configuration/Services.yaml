@@ -6,3 +6,9 @@ services:
   Cru\ExternalLinkList\:
     resource: '../Classes/*'
     exclude: '../Classes/Domain/Model/*'
+
+  Cru\ExternalLinkList\Service\ProvideExternalLinkListService:
+    public: true
+
+  Cru\ExternalLinkList\Service\ProvideParsedLinkListService:
+    public: true

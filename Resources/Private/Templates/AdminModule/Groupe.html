@@ -1,4 +1,5 @@
 <html data-namespace-typo3-fluid="true" xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+   xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
 <f:layout name="Module" />
@@ -62,16 +63,7 @@
                                        <td><a href="{link.href}">{link.href}</a></td>
                                        <td>
                                           <be:link.editRecord class="btn btn-default btn-borderless" table="tt_content" uid="{link.uid}">
-                                             <span class="t3js-icon icon icon-size-small icon-state-default icon-actions-page-open"
-                                                data-identifier="actions-page-open" aria-hidden="true">
-                                                <span class="icon-markup">
-                                                   <svg class="icon-color">
-                                                      <use
-                                                         xlink:href="/_assets/1ee1d3e909b58d32e30dcea666dd3224/Icons/T3Icons/sprites/actions.svg#actions-file-edit">
-                                                      </use>
-                                                   </svg>
-                                                </span>
-                                             </span>
+                                             <core:icon identifier="actions-open" size="small" />
                                           </be:link.editRecord>
                                        </td>
                                     </tr>
