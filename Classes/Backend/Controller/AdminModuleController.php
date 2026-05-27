@@ -107,13 +107,13 @@ final class AdminModuleController
         ];
 
         foreach ($menuItems as $menuItemConfig) {
-            $currentUri = $request->getUri();
-            $uri = $this->uriBuilder->buildUriFromRoute($menuItemConfig['route']);
-            $isActive = ($currentUri->getPath() === $uri->getPath());
+            $menuUri = $this->uriBuilder->buildUriFromRoute($menuItemConfig['route']);
+            $href = (string)$menuUri;
+            $isActive = $request->getUri()->getPath() === $menuUri->getPath();
             $menuItem = $menu->makeMenuItem()
-                            ->setTitle($menuItemConfig['label'])
-                            ->setHref($uri)
-                            ->setActive($isActive);
+                ->setTitle($menuItemConfig['label'])
+                ->setHref($href)
+                ->setActive($isActive);
             $menu->addMenuItem($menuItem);
         }
         $moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->addMenu($menu);
