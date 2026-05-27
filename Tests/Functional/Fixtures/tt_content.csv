@@ -1,0 +1,4 @@
+"tt_content",,,,,,,,,,,,
+,"uid","pid","tstamp","crdate","deleted","hidden","starttime","endtime","sorting","CType","bodytext"
+,1,1,1700000000,1700000000,0,0,0,0,256,"text","<p>See <a href='https://external.example/test' title='Example'>example</a> and <a href='t3://page?uid=1'>internal</a>.</p>"
+,2,1,1700000001,1700000001,0,0,0,0,512,"text","<p><a href='https://second.example/page' title='Second' target='_blank'>more</a> and <a href='not-valid'>skip</a>.</p>"
