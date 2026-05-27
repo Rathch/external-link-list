@@ -23,8 +23,9 @@ namespace Cru\ExternalLinkList\Service;
 
 use DOMDocument;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class ProvideParsedLinkListService
 {
@@ -122,7 +123,7 @@ final class ProvideParsedLinkListService
             ->select('uid', 'bodytext', 'pid')
             ->from('tt_content')
             ->where(
-                $queryBuilder->expr()->like('bodytext', $queryBuilder->createNamedParameter('%<a%', \PDO::PARAM_STR))
+                $queryBuilder->expr()->like('bodytext', $queryBuilder->createNamedParameter('%<a%', Connection::PARAM_STR))
             )
             ->executeQuery()
             ->fetchAllAssociative();
