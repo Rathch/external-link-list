@@ -25,14 +25,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class ProvideExternalLinkListService
 {
     public function __construct(
         private readonly ConnectionPool $connectionPool,
+        private readonly LinkService $linkService,
     ) {}
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getConfiguration(bool $useCache = true, bool $fetchDocs = true, ?OutputInterface $cliOutput = null): array
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable('pages');
@@ -59,15 +62,20 @@ final class ProvideExternalLinkListService
 
     /**
      * Ensures a "url" key for templates: TYPO3 v12/v13 use pages.url, v14+ uses pages.link (typolink).
+     *
+     * @param array<string, mixed> $page
+     * @return array<string, mixed>
      */
     private function normalizePageLinkRow(array $page): array
     {
-        if (!empty($page['url']) && !$this->isTypo3ResourceUri((string)$page['url'])) {
+        $url = (string)($page['url'] ?? '');
+        if ($url !== '' && !$this->isTypo3ResourceUri($url)) {
             return $page;
         }
 
-        if (!empty($page['link'])) {
-            $page['url'] = $this->resolveLinkFieldForDisplay((string)$page['link']);
+        $link = (string)($page['link'] ?? '');
+        if ($link !== '') {
+            $page['url'] = $this->resolveLinkFieldForDisplay($link);
         }
 
         return $page;
@@ -76,6 +84,8 @@ final class ProvideExternalLinkListService
     /**
      * TYPO3 v12/v13: pages.url holds plain https:// targets (no t3://).
      * TYPO3 v14+: only typolink type "url" counts as external (t3://page etc. are excluded).
+     *
+     * @param array<string, mixed> $page
      */
     private function isExternalLinkPage(array $page): bool
     {
@@ -84,18 +94,16 @@ final class ProvideExternalLinkListService
             return true;
         }
 
-        if (empty($page['link'])) {
+        $link = (string)($page['link'] ?? '');
+        if ($link === '') {
             return false;
         }
 
         try {
-            $linkService = GeneralUtility::makeInstance(LinkService::class);
-            $linkDetails = $linkService->resolve((string)$page['link']);
+            $linkDetails = $this->linkService->resolve($link);
 
             return ($linkDetails['type'] ?? '') === LinkService::TYPE_URL;
         } catch (Throwable) {
-            $link = (string)$page['link'];
-
             return !$this->isTypo3ResourceUri($link) && filter_var($link, FILTER_VALIDATE_URL) !== false;
         }
     }
@@ -108,14 +116,13 @@ final class ProvideExternalLinkListService
     private function resolveLinkFieldForDisplay(string $link): string
     {
         try {
-            $linkService = GeneralUtility::makeInstance(LinkService::class);
-            $linkDetails = $linkService->resolve($link);
+            $linkDetails = $this->linkService->resolve($link);
 
             if (($linkDetails['type'] ?? '') === LinkService::TYPE_URL) {
-                return (string)($linkDetails['url'] ?? $linkService->asString($linkDetails));
+                return (string)($linkDetails['url'] ?? $this->linkService->asString($linkDetails));
             }
 
-            return $linkService->asString($linkDetails);
+            return $this->linkService->asString($linkDetails);
         } catch (Throwable) {
             return $link;
         }

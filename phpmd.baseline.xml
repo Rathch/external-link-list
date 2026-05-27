@@ -5,6 +5,5 @@
   <violation rule="PHPMD\Rule\CleanCode\BooleanArgumentFlag" file="Classes/Service/ProvideExternalLinkListService.php"/>
   <violation rule="PHPMD\Rule\UnusedFormalParameter" file="Classes/Service/ProvideExternalLinkListService.php"/>
   <violation rule="PHPMD\Rule\CleanCode\BooleanArgumentFlag" file="Classes/Service/ProvideParsedLinkListService.php"/>
-  <violation rule="PHPMD\Rule\CleanCode\ErrorControlOperator" file="Classes/Service/ProvideParsedLinkListService.php" method="getConfiguration"/>
   <violation rule="PHPMD\Rule\CleanCode\StaticAccess" file="Classes/Service/ProvideParsedLinkListService.php"/>
 </phpmd-baseline>

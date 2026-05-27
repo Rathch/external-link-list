@@ -29,77 +29,87 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class ProvideParsedLinkListService
 {
+    public function __construct(
+        private readonly ConnectionPool $connectionPool,
+    ) {}
+
+    /**
+     * @return array<int, array<int, array{href: string, uid: int, pid: int, title: string}>>
+     */
     public function getConfiguration(bool $useCache = true): array
     {
         $cacheFile = Environment::getVarPath() . '/cache/data/links.json';
-        $externalLinks = [];
 
-        if (
-            $useCache === true
-            && file_exists($cacheFile)
-            && filemtime($cacheFile) > time() - 600
-        ) {
-            return json_decode(file_get_contents($cacheFile), true);
+        if ($useCache === true) {
+            $cached = $this->readCacheIfFresh($cacheFile);
+            if ($cached !== null) {
+                /** @var array<int, array<int, array{href: string, uid: int, pid: int, title: string}>> $cached */
+                return $cached;
+            }
         }
 
+        $externalLinks = [];
         $records = $this->fetchRecordsWithLinks();
-        
-        foreach ($records as $record) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
-            $page = $queryBuilder
-            ->select('uid', 'title')
-            ->from('pages')
-            ->where(
-                $queryBuilder->expr()->eq('uid', $record['pid'])
-            )
-            ->executeQuery()
-            ->fetchAssociative();
 
-            $dom = new DOMDocument();
-            @$dom->loadHTML($record['bodytext'], LIBXML_NOERROR);
+        foreach ($records as $record) {
+            $queryBuilder = $this->connectionPool->getQueryBuilderForTable('pages');
+            $page = $queryBuilder
+                ->select('uid', 'title')
+                ->from('pages')
+                ->where(
+                    $queryBuilder->expr()->eq('uid', $record['pid'])
+                )
+                ->executeQuery()
+                ->fetchAssociative();
+
+            $pageTitle = is_array($page) ? (string)($page['title'] ?? '') : '';
+
+            $dom = $this->loadHtmlDocument($record['bodytext']);
             $anchors = $dom->getElementsByTagName('a');
             $index = 0;
             foreach ($anchors as $anchor) {
                 $href = trim($anchor->getAttribute('href'));
-                if (!str_starts_with($href, 't3://') && filter_var($href, FILTER_VALIDATE_URL)) {
+                if ($this->isExternalHref($href)) {
                     $externalLinks[$record['uid']][$index] = [
                         'href' => $href,
                         'uid' => $record['uid'],
                         'pid' => $record['pid'],
-                        'title' => $page['title'],
+                        'title' => $pageTitle,
                     ];
                     $index++;
                 }
             }
         }
 
-        GeneralUtility::writeFileToTypo3tempDir($cacheFile, json_encode($externalLinks));
+        $this->writeCache($cacheFile, $externalLinks);
 
         return $externalLinks;
     }
 
+    /**
+     * @return array<string, list<array{href: string, uid: int, pid: int, title: string, target: string}>>
+     */
     public function getGroupeConfiguration(bool $useCache = true): array
     {
         $cacheFile = Environment::getVarPath() . '/cache/data/links_grouped.json';
-        $externalLinks = [];
 
-        if (
-            $useCache === true
-            && file_exists($cacheFile)
-            && filemtime($cacheFile) > time() - 600
-        ) {
-            return json_decode(file_get_contents($cacheFile), true);
+        if ($useCache === true) {
+            $cached = $this->readCacheIfFresh($cacheFile);
+            if ($cached !== null) {
+                /** @var array<string, list<array{href: string, uid: int, pid: int, title: string, target: string}>> $cached */
+                return $cached;
+            }
         }
+
+        $externalLinks = [];
         $records = $this->fetchRecordsWithLinks();
 
         foreach ($records as $record) {
-            $dom = new DOMDocument();
-            @$dom->loadHTML($record['bodytext'], LIBXML_NOERROR);
+            $dom = $this->loadHtmlDocument($record['bodytext']);
             $anchors = $dom->getElementsByTagName('a');
-            $index = 0;
             foreach ($anchors as $anchor) {
                 $href = trim($anchor->getAttribute('href'));
-                if (!str_starts_with($href, 't3://') && filter_var($href, FILTER_VALIDATE_URL)) {
+                if ($this->isExternalHref($href)) {
                     $externalLinks[$href][] = [
                         'href' => $href,
                         'uid' => $record['uid'],
@@ -111,14 +121,17 @@ final class ProvideParsedLinkListService
             }
         }
 
-        GeneralUtility::writeFileToTypo3tempDir($cacheFile, json_encode($externalLinks));
+        $this->writeCache($cacheFile, $externalLinks);
 
         return $externalLinks;
     }
 
-    private function fetchRecordsWithLinks()
+    /**
+     * @return list<array{uid: int, bodytext: string, pid: int}>
+     */
+    private function fetchRecordsWithLinks(): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tt_content');
         $records = $queryBuilder
             ->select('uid', 'bodytext', 'pid')
             ->from('tt_content')
@@ -128,6 +141,69 @@ final class ProvideParsedLinkListService
             ->executeQuery()
             ->fetchAllAssociative();
 
-            return $records;
+        $normalized = [];
+        foreach ($records as $record) {
+            $normalized[] = [
+                'uid' => (int)$record['uid'],
+                'bodytext' => (string)$record['bodytext'],
+                'pid' => (int)$record['pid'],
+            ];
+        }
+
+        return $normalized;
+    }
+
+    private function loadHtmlDocument(string $html): DOMDocument
+    {
+        $dom = new DOMDocument();
+        $useInternalErrors = libxml_use_internal_errors(true);
+        try {
+            $dom->loadHTML($html, LIBXML_NOERROR);
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($useInternalErrors);
+        }
+
+        return $dom;
+    }
+
+    private function isExternalHref(string $href): bool
+    {
+        return $href !== ''
+            && !str_starts_with($href, 't3://')
+            && filter_var($href, FILTER_VALIDATE_URL) !== false;
+    }
+
+    /**
+     * @return array<mixed>|null
+     */
+    private function readCacheIfFresh(string $cacheFile): ?array
+    {
+        if (!file_exists($cacheFile) || filemtime($cacheFile) <= time() - 600) {
+            return null;
+        }
+
+        $contents = file_get_contents($cacheFile);
+        if ($contents === false) {
+            return null;
+        }
+
+        $decoded = json_decode($contents, true);
+        if (!is_array($decoded)) {
+            return null;
+        }
+
+        return $decoded;
+    }
+
+    /**
+     * @param array<mixed> $data
+     */
+    private function writeCache(string $cacheFile, array $data): void
+    {
+        GeneralUtility::writeFileToTypo3tempDir(
+            $cacheFile,
+            json_encode($data, JSON_THROW_ON_ERROR),
+        );
     }
 }
