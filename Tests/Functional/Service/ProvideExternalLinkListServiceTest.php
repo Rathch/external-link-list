@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Cru\ExternalLinkList\Tests\Functional\Service;
 
 use Cru\ExternalLinkList\Service\ProvideExternalLinkListService;
+use Cru\ExternalLinkList\Tests\Functional\Fixtures\ImportsPagesDataSetTrait;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 final class ProvideExternalLinkListServiceTest extends FunctionalTestCase
 {
+    use ImportsPagesDataSetTrait;
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/external_link_list',
     ];
@@ -20,7 +22,7 @@ final class ProvideExternalLinkListServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
+        $this->importPagesDataSet();
 
         $this->subject = $this->get(ProvideExternalLinkListService::class);
     }

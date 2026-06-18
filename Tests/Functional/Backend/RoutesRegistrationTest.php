@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cru\ExternalLinkList\Tests\Functional\Backend;
 
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Backend\Module\ModuleProvider;
 use TYPO3\CMS\Backend\Routing\Router;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -32,7 +33,7 @@ final class RoutesRegistrationTest extends FunctionalTestCase
     #[Test]
     public function backendModuleIsRegistered(): void
     {
-        $moduleProvider = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Module\ModuleProvider::class);
+        $moduleProvider = $this->get(ModuleProvider::class);
         $webModule = $moduleProvider->getModule('web');
         self::assertNotNull($webModule);
 
