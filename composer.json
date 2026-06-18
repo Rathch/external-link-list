@@ -54,7 +54,11 @@
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "external_link_list"
+            "Package": {
+                "providesPackages": {}
+            },
+            "extension-key": "external_link_list",
+            "version": "2.2.0"
         }
     },
     "scripts": {
